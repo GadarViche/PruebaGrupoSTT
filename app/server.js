@@ -2,48 +2,52 @@ var express = require('express') //llamamos a Express
 var app = express()
 app.use(express.json());
 var port = process.env.PORT || 8080 // establecemos nuestro puerto
-var mysql = require('mysql');
-
-var con = mysql.createConnection({
-  host: "localhost",
-  user: "root",
-  password: "root"
-});
-
-con.connect(function(err) {
-  if (err) throw err;
-  console.log("Connected!");
-});
 
 
 
+//MySQL
+// var mysql = require('mysql');
+// var con = mysql.createConnection({
+//   host: "localhost",
+//   user: "root",
+//   password: "root"
+// });
 
+// con.connect(function (err) {
+//   if (err) throw err;
+//   console.log("Connected!");
+// });
 
-//app.post('/validate-anomaly', function (req, res) {
+// iniciamos nuestro servidor
+app.listen(port)
+console.log('API escuchando en el puerto ' + port);
+
 app.post('/validate-anomaly', function (req, res) {
 
-
-  let test01 = req.body.data;
+  let dna = req.body.dna;
 
   //Mostrar matriz en consola
-  for (let x = 0; x < test01.length; x++) {
-    console.log(test01[x]);
+  for (let x = 0; x < dna.length; x++) {
+    console.log(dna[x]);
   }
 
-  let anomalia = false;
+  //Variables por defecto
   res.status(403);
+  let anomalia = false;
   let comentario = "Sin anomalías";
 
 
-  for (let i = 0; i < test01.length; i++) {
+  for (let i = 0; i < dna.length; i++) {
 
-    for (let j = 0; j < test01[i].length; j++) {
+    for (let j = 0; j < dna[i].length; j++) {
 
       //Búsqueda de anomalías en Orientación horizontal
-      if (test01[i].length > j + 2 && test01[i][j] == test01[i][j + 1] && test01[i][j] == test01[i][j + 2]) {
+      if (dna[i].length > j + 2 &&
+        dna[i][j] == dna[i][j + 1] &&
+        dna[i][j] == dna[i][j + 2]) {
 
-        //console.log("Largo eje i= " + test01.length + " \nLargo eje j= " + test01[i].length)
-        comentario = "Anomalia en la letra " + test01[i][j] + " | Posición " + "i=" + i + " j=" + j + " | Orientación horizontal";
+        //console.log("Largo eje i= " + dna.length + " \nLargo eje j= " + dna[i].length)
+        comentario = "Anomalia en la letra " + dna[i][j] + " | Posición " + "i=" + i + " j=" + j + " | Orientación horizontal";
         console.log(comentario);
 
         anomalia = true;
@@ -54,12 +58,12 @@ app.post('/validate-anomaly', function (req, res) {
 
       }
       //Búsqueda de anomalías en Orientación vertical
-      if (test01.length > i + 2 &&
-        test01[i][j] == test01[i + 1][j] &&
-        test01[i][j] == test01[i + 2][j]) {
+      if (dna.length > i + 2 &&
+        dna[i][j] == dna[i + 1][j] &&
+        dna[i][j] == dna[i + 2][j]) {
 
-        //console.log("Largo eje i= " + test01.length + " \nLargo eje j= " + test01[i].length)
-        comentario = "Anomalia en la letra " + test01[i][j] + " | Posición " + "i=" + i + " j=" + j + " | Orientación vertical";
+        //console.log("Largo eje i= " + dna.length + " \nLargo eje j= " + dna[i].length)
+        comentario = "Anomalia en la letra " + dna[i][j] + " | Posición " + "i=" + i + " j=" + j + " | Orientación vertical";
         console.log(comentario);
 
         anomalia = true;
@@ -71,12 +75,12 @@ app.post('/validate-anomaly', function (req, res) {
 
       }
       //Búsqueda de anomalías en Orientación diagonal descendente
-      if (test01.length > i + 2 && test01[i].length > j + 2 &&
-        test01[i][j] == test01[i + 1][j + 1] &&
-        test01[i][j] == test01[i + 2][j + 2]) {
+      if (dna.length > i + 2 &&
+        dna[i].length > j + 2 &&
+        dna[i][j] == dna[i + 1][j + 1] &&
+        dna[i][j] == dna[i + 2][j + 2]) {
 
-        //console.log("Largo eje i= " + test01.length + " \nLargo eje j= " + test01[i].length)
-        comentario = "Anomalia en la letra " + test01[i][j] + " | Posición " + "i=" + i + " j=" + j + " | Orientación diagonal descendente";
+        comentario = "Anomalia en la letra " + dna[i][j] + " | Posición " + "i=" + i + " j=" + j + " | Orientación diagonal descendente";
         console.log(comentario);
 
         anomalia = true;
@@ -88,12 +92,13 @@ app.post('/validate-anomaly', function (req, res) {
       }
 
       //Búsqueda de anomalías en Orientación diagonal ascendente
-      if (test01.length > i + 2 && test01[i].length > j - 2 &&
-        test01[i][j] == test01[i + 1][j - 1] &&
-        test01[i][j] == test01[i + 2][j - 2]) {
+      if (dna.length > i + 2 &&
+        dna[i].length > j - 2 &&
+        dna[i][j] == dna[i + 1][j - 1] &&
+        dna[i][j] == dna[i + 2][j - 2]) {
 
-        //console.log("Largo eje i= " + test01.length + " \nLargo eje j= " + test01[i].length)
-        comentario = "Anomalia en la letra " + test01[i][j] + " | Posición " + "i=" + i + " j=" + j + " | Orientación diagonal ascendente";
+
+        comentario = "Anomalia en la letra " + dna[i][j] + " | Posición " + "i=" + i + " j=" + j + " | Orientación diagonal ascendente";
         console.log(comentario);
 
         anomalia = true;
@@ -104,16 +109,7 @@ app.post('/validate-anomaly', function (req, res) {
 
       }
 
-
-
-      
-
     }
-
-  }
-
-  function actualizarBD() {
-        
 
   }
 
@@ -121,21 +117,4 @@ app.post('/validate-anomaly', function (req, res) {
     mensaje: comentario
   })
 
-
-
 })
-
-
-
-
-
-// app.post('/', function (req, res) {
-//   res.json({
-//     mensaje: 'Método post'
-//   })
-// })
-
-
-// iniciamos nuestro servidor
-app.listen(port)
-console.log('API escuchando en el puerto ' + port);
